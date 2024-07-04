@@ -1,6 +1,6 @@
 <?php
 include 'database.php';
-$result = $conn->query("SELECT * FROM listing");
+$result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +13,7 @@ $result = $conn->query("SELECT * FROM listing");
 <body>
     <div class="container">
         <h1 class="mt-5">Real Estate Listings</h1>
+        <a href="add_listing.php" class="btn btn-primary mb-3">Add New Listing</a>
         <table class="table table-bordered mt-3">
             <thead>
                 <tr>
@@ -26,11 +27,11 @@ $result = $conn->query("SELECT * FROM listing");
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
-                    <td><?php echo $row['title']; ?></td>
-                    <td><?php echo $row['description']; ?></td>
-                    <td><?php echo $row['price']; ?></td>
-                    <td><?php echo $row['location']; ?></td>
-                    <td><?php echo $row['created_at']; ?></td>
+                    <td><?php echo htmlspecialchars($row['title']); ?></td>
+                    <td><?php echo htmlspecialchars($row['description']); ?></td>
+                    <td><?php echo htmlspecialchars($row['price']); ?></td>
+                    <td><?php echo htmlspecialchars($row['location']); ?></td>
+                    <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
