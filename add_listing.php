@@ -1,6 +1,9 @@
 <?php
 include 'database.php';
 
+$success = NULL;
+$error = NULL;
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['title'];
     $description = $_POST['description'];
@@ -10,12 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare("INSERT INTO listing (title, description, price, location) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssds", $title, $description, $price, $location);
 
-    // TODO: replace echos with html to look nicer
-    if ($stmt->execute()) {
-        echo "New listing added successfully.";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
+    $success = $stmt->execute();
+    $error = $stmt->error;
 
     $stmt->close();
 }
@@ -31,8 +30,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <div class="container">
+        <?php 
+        if (!is_null($success)) {
+            if ($success) { ?>
+                <div class="alert alert-success mt-3" role="alert">
+                    Added listing successfully
+                </div>
+            <?php } else { ?>
+                <div class="alert alert-danger mt-3" role="alert">
+                    <?php "Error: " . $error ?>
+                </div>
+            <?php }
+        }
+        ?>
+        
         <div class="d-flex align-items-center mt-5 mb-3">
-            <a href="index.php" class="btn btn-secondary mr-3"><</a>
+            <a href="index.php" class="btn btn-secondary mr-3" style="font-size: 150%"><b><</b></a>
             <h1 class="mb-0">Add New Listing</h1>
         </div>
         <form method="POST" action="">

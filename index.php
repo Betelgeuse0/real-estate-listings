@@ -31,7 +31,7 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
                     <td><?php echo htmlspecialchars($row['description']); ?></td>
                     <td><?php echo htmlspecialchars($row['price']); ?></td>
                     <td><?php echo htmlspecialchars($row['location']); ?></td>
-                    <td><?php echo htmlspecialchars($row['created_at']); ?></td>
+                    <td><?php echo htmlspecialchars(date('Y-m-d', strtotime($row['created_at']))); ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
