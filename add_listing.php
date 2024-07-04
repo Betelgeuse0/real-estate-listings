@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare("INSERT INTO listing (title, description, price, location) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssds", $title, $description, $price, $location);
 
+    // TODO: replace echos with html to look nicer
     if ($stmt->execute()) {
         echo "New listing added successfully.";
     } else {
@@ -30,7 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Add New Listing</h1>
+        <div class="d-flex align-items-center mt-5 mb-3">
+            <a href="index.php" class="btn btn-secondary mr-3"><</a>
+            <h1 class="mb-0">Add New Listing</h1>
+        </div>
         <form method="POST" action="">
             <div class="form-group">
                 <label for="title">Title</label>
