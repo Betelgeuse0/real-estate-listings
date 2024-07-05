@@ -9,6 +9,7 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real Estate Listings</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
 </head>
 <body>
     <div class="container">
@@ -22,6 +23,7 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
                     <th>Price</th>
                     <th>Location</th>
                     <th>Date Listed</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +34,11 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
                     <td><?php echo htmlspecialchars($row['price']); ?></td>
                     <td><?php echo htmlspecialchars($row['location']); ?></td>
                     <td><?php echo htmlspecialchars(date('Y-m-d', strtotime($row['created_at']))); ?></td>
+                    <td>
+                        <a href="edit_listing.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
