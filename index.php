@@ -1,5 +1,11 @@
 <?php
 include 'database.php';
+
+$entry_deleted = null;
+if (isset($_GET['delete'])) {
+    $entry_deleted = $_GET['delete'] == 1;
+}
+
 $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
 ?>
 <!DOCTYPE html>
@@ -13,6 +19,12 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
 </head>
 <body>
     <div class="container">
+        <?php if ($entry_deleted): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Deleted listing successfully
+            </div>
+        <?php endif ?>
+
         <h1 class="mt-5">Real Estate Listings</h1>
         <a href="add_listing.php" class="btn btn-primary mb-3">Add New Listing</a>
         <table class="table table-bordered mt-3">
@@ -23,7 +35,7 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
                     <th>Price</th>
                     <th>Location</th>
                     <th>Date Listed</th>
-                    <th>Edit</th>
+                    <th>Edit / Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +49,9 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
                     <td>
                         <a href="edit_listing.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="delete_listing.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this listing?');">
+                            <i class="bi bi-trash"></i>
                         </a>
                     </td>
                 </tr>
