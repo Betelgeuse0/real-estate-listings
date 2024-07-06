@@ -30,6 +30,7 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
         <table class="table table-bordered mt-3">
             <thead>
                 <tr>
+                    <th>Picture</th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Price</th>
@@ -41,6 +42,9 @@ $result = $conn->query("SELECT * FROM listing ORDER BY created_at DESC");
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
+                    <td>
+                        <img src="<?php echo htmlspecialchars($row['picture']); ?>" alt="Listing Picture" style="max-width: 100px;">
+                    </td>
                     <td><?php echo htmlspecialchars($row['title']); ?></td>
                     <td><?php echo htmlspecialchars($row['description']); ?></td>
                     <td><?php echo htmlspecialchars($row['price']); ?></td>

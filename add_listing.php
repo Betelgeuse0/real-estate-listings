@@ -9,9 +9,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $description = $_POST['description'];
     $price = $_POST['price'];
     $location = $_POST['location'];
+    $picture = "";
 
-    $stmt = $conn->prepare("INSERT INTO listing (title, description, price, location) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssds", $title, $description, $price, $location);
+    // Handle file upload
+    if (isset($_FILES["picture"]) and $_FILES["picture"]["error"] == UPLOAD_ERR_OK) {
+        $upload_dir = "uploads/";
+        $picture = basename($_FILES["picture"]["name"]);
+        $target_file = $upload_dir . $picture;
+        if (move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)) {
+            $picture = $target_file;
+        } else {
+            $success = false;
+        }
+    }
+
+    $stmt = $conn->prepare("INSERT INTO listing (title, description, price, location, picture) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssdss", $title, $description, $price, $location, $picture);
 
     $success = $stmt->execute();
     $error = $stmt->error;
@@ -48,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <a href="index.php" class="btn btn-secondary mr-3" style="font-size: 150%"><b><</b></a>
             <h1 class="mb-0">Add New Listing</h1>
         </div>
-        <form method="POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">Title</label>
                 <input type="text" class="form-control" id="title" name="title" required>
@@ -64,6 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="form-group">
                 <label for="location">Location</label>
                 <input type="text" class="form-control" id="location" name="location" required>
+            </div>
+            <div class="form-group">
+                <label for="picture">Picture</label>
+                <input type="file" accept="image/*,.pdf" class="form-control-file" id="picture" name="picture">
             </div>
             <button type="submit" class="btn btn-primary">Add Listing</button>
         </form>
