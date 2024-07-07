@@ -6,4 +6,5 @@ Note: These instructions are for Windows. If you are using another operating sys
 2. Git clone this repository into the xampp/htdocs folder.
 3. Start the Xampp Control Panel and run the Apache and MySQL processes.
 4. Go to http://localhost/phpmyadmin, add a database called "realestate" and add a new user.
-5. Back in the local repo, edit database.php to reflect that new user with the username and password you set.
+5. Additionally, add a "listing" table to the realestate database. You will need fields for id (int/primary key) title (varchar), description (varchar), price (decimal), location (varchar), and created_at (timestamp).
+6. Back in the local repo, edit database.php to reflect that new user with the username and password you set.
