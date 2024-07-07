@@ -3,27 +3,47 @@ include 'database.php';
 
 $id = $_GET['id'];
 $success = null;
-$listing = null;
+
+function getListing($id, $conn) {
+    $stmt = $conn->prepare("SELECT * FROM listing WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $listing = $result->fetch_assoc();
+    $stmt->close();
+    return $listing;
+}
+
+$listing = getListing($id, $conn);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $picture = $listing['picture'];
     $title = $_POST['title'];
     $description = $_POST['description'];
     $price = $_POST['price'];
     $location = $_POST['location'];
 
-    $stmt = $conn->prepare("UPDATE listing SET title = ?, description = ?, price = ?, location = ? WHERE id = ?");
-    $stmt->bind_param("ssdsi", $title, $description, $price, $location, $id);
+    // Handle file upload
+    if (isset($_FILES['picture']) and $_FILES['picture']['error'] == UPLOAD_ERR_OK) {
+        $upload_dir = 'uploads/';
+        $new_picture = basename($_FILES['picture']['name']);
+        $target_file = $upload_dir . $new_picture;
+
+        if (move_uploaded_file($_FILES['picture']['tmp_name'], $target_file)) {
+            $picture = $target_file;
+        } else {
+            $success = false;
+        }
+    }
+
+    $stmt = $conn->prepare("UPDATE listing SET title = ?, description = ?, price = ?, location = ?, picture = ? WHERE id = ?");
+    $stmt->bind_param("ssdssi", $title, $description, $price, $location, $picture, $id);
     $success = $stmt->execute();
 
     $stmt->close();
 }
 
-$stmt = $conn->prepare("SELECT * FROM listing WHERE id = ?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$listing = $result->fetch_assoc();
-$stmt->close();
+$listing = getListing($id, $conn);
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +73,7 @@ $stmt->close();
             <?php }
         } ?>
 
-        <form method="POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">Title</label>
                 <input type="text" class="form-control" id="title" name="title" value="<?php echo htmlspecialchars($listing['title']); ?>" required>
@@ -69,6 +89,20 @@ $stmt->close();
             <div class="form-group">
                 <label for="location">Location</label>
                 <input type="text" class="form-control" id="location" name="location" value="<?php echo htmlspecialchars($listing['location']); ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="current_picture">Current Picture</label>
+                <div>
+                    <?php if (!empty($listing['picture'])): ?>
+                        <img src="<?php echo htmlspecialchars($listing['picture']); ?>" alt="Listing Picture" style="max-width: 100px;">
+                    <?php else: ?>
+                        <p>No picture available.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="picture">New Picture (optional)</label>
+                <input type="file" accept="image/*,.pdf" class="form-control-file" id="picture" name="picture">
             </div>
             <button type="submit" class="btn btn-primary">Update Listing</button>
         </form>

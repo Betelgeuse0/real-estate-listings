@@ -7,4 +7,3 @@ Note: These instructions are for Windows. If you are using another operating sys
 3. Start the Xampp Control Panel and run the Apache and MySQL processes.
 4. Go to http://localhost/phpmyadmin, add a database called "realestate" and add a new user.
 5. Back in the local repo, edit database.php to reflect that new user with the username and password you set.
-6. Lastly, make sure to add a uploads folder in the real-estate-listings folder.
